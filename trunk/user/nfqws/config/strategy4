@@ -9,10 +9,10 @@
 ### https
 --new --filter-tcp=443
 --dpi-desync=fake,multisplit
---dpi-desync-fake-tls=/usr/share/zapret/fake/tls_clienthello_max_ru.bin
+--dpi-desync-fake-tls=/usr/share/zapret/fake/tls_clienthello_www_google_com.bin
 --dpi-desync-fooling=ts
 --dpi-desync-split-seqovl=1
---dpi-desync-split-seqovl-pattern=/usr/share/zapret/fake/tls_clienthello_max_ru.bin
+--dpi-desync-split-seqovl-pattern=/usr/share/zapret/fake/tls_clienthello_www_google_com.bin
 <HOSTLIST>
 
 ### quic

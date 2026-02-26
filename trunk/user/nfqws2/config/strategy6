@@ -1,4 +1,5 @@
 ### All arguments here: https://github.com/bol-van/zapret2
+# To enable ts fooling in Windows: netsh interface tcp set global timestamps=enabled
 
 --blob=quic_google:@/usr/share/zapret/fake/quic_initial_www_google_com.bin
 --blob=tls_google:@/usr/share/zapret/fake/tls_clienthello_www_google_com.bin
@@ -6,10 +7,10 @@
 ### https, http
 --filter-tcp=443,80 --filter-l7=http,tls <HOSTLIST>
 --payload=tls_client_hello
---lua-desync=fake:blob=fake_default_tls:tls_mod=rnd,dupsid,sni=yandex.net:tcp_seq=10000
+--lua-desync=fake:blob=fake_default_tls:tls_mod=rnd,dupsid,sni=yandex.net:tcp_ts=-600000
 --lua-desync=hostfakesplit:host=yandex.net:midhost=host-2:seqovl=sniext+3:seqovl_pattern=tls_google:tcp_ack=-66000:tcp_ts_up
 --payload=http_req
---lua-desync=hostfakesplit:tcp_md5:tcp_ts_up
+--lua-desync=hostfakesplit:tcp_md5
 
 ### quic
 --new --filter-udp=443 --filter-l7=quic <HOSTLIST_NOAUTO>
@@ -18,7 +19,6 @@
 
 ### wireguard, discord, telegram media
 --new --filter-udp=* --filter-l7=wireguard,stun,discord
---out-range=-n1
 --payload=wireguard_initiation,wireguard_response,wireguard_cookie,stun,discord_ip_discovery
 --lua-desync=fake:blob=quic_google:repeats=6
 

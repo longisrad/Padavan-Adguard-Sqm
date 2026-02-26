@@ -41,7 +41,7 @@ extract_test:
 			libxt_sctp. libxt_socket. libxt_statistic. libxt_string. \
 			libip6t_NETMAP. libip6t_MASQUERADE. libip6t_DNAT. \
 			libip6t_SNPT. libip6t_SNAT. libip6t_DNPT. libip6t_REDIRECT. \
-		; do mv $$i* disabled; done; \
+		; do mv $$i* disabled || : ; done; \
 	fi )
 
 config_test:
@@ -103,12 +103,12 @@ clean:
 	rm -f config_done
 
 romfs:
-	$(ROMFSINST) $(SRC_NAME)/iptables/xtables-legacy-multi /bin/xtables-legacy-multi
-	$(ROMFSINST) -s xtables-legacy-multi /bin/iptables
-	$(ROMFSINST) -s xtables-legacy-multi /bin/iptables-restore
-	$(ROMFSINST) -s xtables-legacy-multi /bin/iptables-save
+	$(ROMFSINST) $(SRC_NAME)/iptables/xtables-legacy-multi /bin/xtables-multi
+	$(ROMFSINST) -s xtables-multi /bin/iptables
+	$(ROMFSINST) -s xtables-multi /bin/iptables-restore
+	$(ROMFSINST) -s xtables-multi /bin/iptables-save
 ifdef CONFIG_IPV6
-	$(ROMFSINST) -s xtables-legacy-multi /bin/ip6tables
-	$(ROMFSINST) -s xtables-legacy-multi /bin/ip6tables-restore
-	$(ROMFSINST) -s xtables-legacy-multi /bin/ip6tables-save
+	$(ROMFSINST) -s xtables-multi /bin/ip6tables
+	$(ROMFSINST) -s xtables-multi /bin/ip6tables-restore
+	$(ROMFSINST) -s xtables-multi /bin/ip6tables-save
 endif

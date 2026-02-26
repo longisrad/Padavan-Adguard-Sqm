@@ -1,12 +1,12 @@
 # https://www.wireguard.com
 # https://github.com/amnezia-vpn
 
-SRC_VER = 1.0.20250521
+SRC_VER = 1.0.20260223
 SRC_NAME = wireguard-tools-$(SRC_VER)
 SRC_URL = https://github.com/WireGuard/wireguard-tools/archive/refs/tags/v$(SRC_VER).tar.gz
 
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_AMNEZIAWG),y)
-SRC_VER = 1.0.20250903
+SRC_VER = 1.0.20260223
 SRC_NAME = amneziawg-tools-$(SRC_VER)
 SRC_URL = https://github.com/amnezia-vpn/amneziawg-tools/archive/refs/tags/v$(SRC_VER).tar.gz
 endif

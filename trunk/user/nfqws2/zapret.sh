@@ -176,18 +176,17 @@ set_chain_rules()
 
 set_fw_rules()
 {
-    local cb_orig="-m connbytes --connbytes-dir=original --connbytes-mode=packets --connbytes 1:9"
-    local cb_reply="-m connbytes --connbytes-dir=reply --connbytes-mode=packets --connbytes 1:3"
+    cb(){ echo "-m connbytes --connbytes-dir=$1 --connbytes-mode=packets --connbytes 1:$2"; }
 
     echo "
 -$1 PREROUTING -j zapret_clients
 -$1 OUTPUT -j zapret_out
--$1 INPUT -p tcp $cb_reply -m multiport --sports 80,443 -j zapret_pre
--$1 INPUT -p udp $cb_reply -m multiport --sports 443 -j zapret_pre
--$1 FORWARD -p tcp $cb_reply -m multiport --sports 80,443 -j zapret_pre
--$1 FORWARD -p udp $cb_reply -m multiport --sports 443 -j zapret_pre
--$1 POSTROUTING -p tcp $cb_orig -j zapret_post
--$1 POSTROUTING -p udp $cb_orig -j zapret_post
+-$1 INPUT -p tcp $(cb reply 10) -m multiport --sports 80,443 -j zapret_pre
+-$1 INPUT -p udp $(cb reply 3) -m multiport --sports 443 -j zapret_pre
+-$1 FORWARD -p tcp $(cb reply 10) -m multiport --sports 80,443 -j zapret_pre
+-$1 FORWARD -p udp $(cb reply 3) -m multiport --sports 443 -j zapret_pre
+-$1 POSTROUTING -p tcp $(cb original 20) -j zapret_post
+-$1 POSTROUTING -p udp $(cb original 5) -j zapret_post
 "
 }
 
