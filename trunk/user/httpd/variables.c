@@ -506,7 +506,6 @@
 			{"http_access", "", NULL, EVM_RESTART_HTTPD},
 			{"http_proto", "", NULL, EVM_RESTART_HTTPD},
 			{"http_lanport", "", NULL, EVM_RESTART_HTTPD},
-			{"http_ignore_sessions", "", NULL, FALSE},
 #if defined (SUPPORT_HTTPS)
 			{"https_lport", "", NULL, EVM_RESTART_HTTPD},
 			{"https_clist", "", NULL, EVM_RESTART_HTTPD},

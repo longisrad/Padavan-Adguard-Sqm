@@ -27,7 +27,6 @@ $j(document).ready(function() {
 	init_itoggle('telnetd');
 	init_itoggle('sshd_enable_gp');
 	init_itoggle('wins_enable', change_wins_enabled);
-	init_itoggle('http_ignore_sessions');
 	init_itoggle('lltd_enable');
 	init_itoggle('adsc_enable');
 	init_itoggle('crond_enable', change_crond_enabled);
@@ -334,20 +333,6 @@ function change_crond_enabled(){
                                                     <option value="1" <% nvram_match_x("", "http_access", "1","selected"); %>>Wired clients only</option>
                                                     <option value="2" <% nvram_match_x("", "http_access", "2","selected"); %>>Wired and MainAP clients</option>
                                                 </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this,23,2);"><#Adm_System_http_ignore#></a></th>
-                                            <td>
-                                                <div class="main_itoggle">
-                                                    <div id="http_ignore_sessions_on_of">
-                                                        <input type="checkbox" id="http_ignore_sessions_fake" <% nvram_match_x("", "http_ignore_sessions", "1", "value=1 checked"); %><% nvram_match_x("", "http_ignore_sessions", "0", "value=0"); %>>
-                                                    </div>
-                                                </div>
-                                                <div style="position: absolute; margin-left: -10000px;">
-                                                    <input type="radio" name="http_ignore_sessions" id="http_ignore_sessions_1" class="input" value="1" <% nvram_match_x("", "http_ignore_sessions", "1", "checked"); %>/><#checkbox_Yes#>
-                                                    <input type="radio" name="http_ignore_sessions" id="http_ignore_sessions_0" class="input" value="0" <% nvram_match_x("", "http_ignore_sessions", "0", "checked"); %>/><#checkbox_No#>
-                                                </div>
                                             </td>
                                         </tr>
                                     </table>

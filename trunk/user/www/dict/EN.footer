@@ -1839,5 +1839,3 @@ Service_DNSCrypt_Info=DNSCrypt is a protocol that encrypts DNS queries between a
 Service_DNSCrypt_Mode_Desc=<b>Standalone</b>: the service works by itself.<br><b>Router's DNS</b>: integrates with the router's built-in DNS server to resolve domain names. The provider DNS is ignored.
 Service_DNSCrypt_Mode_Menu0=Standalone
 Service_DNSCrypt_Mode_Menu1=Router's DNS
-Adm_System_http_ignore=Ignore open sessions?
-Adm_System_http_ignore_desc=Allows you to avoid the message &#34;<b>You cannot Login unless logout another user first</b>&#34;.<br>Changes within one session will not be propagated to others.<br>To synchronize in other sessions, you must manually refresh the page.

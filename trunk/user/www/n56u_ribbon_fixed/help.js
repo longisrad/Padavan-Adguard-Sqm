@@ -170,8 +170,7 @@ helpcontent[22] = new Array("",
 				"<#OP_AP_desc1#>");
 // Tweaks
 helpcontent[23] = new Array("",
-				"<#TweaksWdg_desc#>",
-				"<#Adm_System_http_ignore_desc#>");
+				"<#TweaksWdg_desc#>");
 
 // DDNS
 helpcontent[24] = new Array("",
