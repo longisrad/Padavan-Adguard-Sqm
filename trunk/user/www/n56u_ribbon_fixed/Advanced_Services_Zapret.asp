@@ -173,6 +173,20 @@ function restoreZapret(){
 	sendSystemCmd(cmd, true);
 }
 
+function restoreZapretDomain(){
+	if(!confirm('<#ZapretRestoreDomainConfirm#>'))
+		return false;
+
+	var v, cmd;
+
+	v = "<% nvram_get_x("", "zapret_enable"); %>";
+	cmd = 'cd /etc/storage/zapret;rm -f ./user.list ./auto.list ./exclude.list;';
+	cmd += 'zapret.sh ' + (v == 1 ? 'restart' : '') + ';';
+	cmd += 'mtd_storage.sh save';
+
+	sendSystemCmd(cmd, true);
+}
+
 function zapret_strategy_change(o, v) {
 	for (const i of ["", 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) {
 		showhide_div('zapretc.strategy' + i, 0);
@@ -332,7 +346,8 @@ function zapret_strategy_change(o, v) {
                                                         <td style="border:0px; padding-bottom: 4px; padding-left: 11px;">
                                                             <#ZapretAutomaticList#>:
                                                         </td>
-                                                        <td style="border:0px; padding-bottom: 4px; padding-left: 13px;">
+                                                        <td style="border:0px; padding-bottom: 4px; padding-left: 13px; position: relative">
+                                                            <input type="button" class="btn btn-mini btn-danger" style="outline:0; position: absolute; top: -18px; left: 120px" onclick="restoreZapretDomain();" value="<#CTL_restore#>"/>
                                                             <#ZapretExclusionList#>:
                                                         </td>
                                                     </tr>

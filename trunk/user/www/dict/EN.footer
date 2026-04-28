@@ -1579,6 +1579,7 @@ ZapretStrategy=Strategies
 ZapretDefaultProfile=Default profile
 ZapretStrategyProfile=Strategy profile
 ZapretRestoreConfirm=Restore default values of strategy profiles?
+ZapretRestoreDomainConfirm=Restore default domain list values?
 account_overflow=Only 50 accounts allowed.
 asusddns_inputhint=Key in the name
 block_Comfirm1=Are you sure you want to block this client
