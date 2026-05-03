@@ -566,6 +566,8 @@
 			{"zapretc.auto.list", "File", NULL, FALSE},
 			{"zapretc.user.list", "File", NULL, FALSE},
 			{"zapretc.exclude.list", "File", NULL, FALSE},
+			{"zapretc.ipset.list", "File", NULL, FALSE},
+			{"zapretc.ipset-exclude.list", "File", NULL, FALSE},
 #endif
 #if defined(APP_TOR)
 			{"tor_enable", "", NULL, EVM_RESTART_TOR|EVM_RESTART_DHCPD},

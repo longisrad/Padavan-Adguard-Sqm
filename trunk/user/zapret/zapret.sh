@@ -30,12 +30,16 @@ HOSTLIST_NOAUTO="
   --hostlist=${CONF_DIR}/auto.list
   --hostlist-exclude=${CONF_DIR}/exclude.list
   --hostlist=/tmp/filter.list
+  --ipset=${CONF_DIR}/ipset.list
+  --ipset-exclude=${CONF_DIR}/ipset-exclude.list
 "
 HOSTLIST="
   --hostlist=${CONF_DIR}/user.list
   --hostlist-exclude=${CONF_DIR}/exclude.list
   --hostlist-auto=${CONF_DIR}/auto.list
   --hostlist=/tmp/filter.list
+  --ipset=${CONF_DIR}/ipset.list
+  --ipset-exclude=${CONF_DIR}/ipset-exclude.list
 "
 
 unset IPSET
@@ -446,8 +450,8 @@ fi
 # copy all non-existent config files to storage except fake dir
 [ -d "$CONF_DIR_EXAMPLE" ] && false | cp -i "${CONF_DIR_EXAMPLE}"/* "$CONF_DIR" >/dev/null 2>&1
 
-for i in user.list exclude.list auto.list strategy; do
-    [ -f ${CONF_DIR}/$i ] || touch ${CONF_DIR}/$i || exit 1
+for i in user exclude auto ipset ipset-exclude; do
+    [ -f ${CONF_DIR}/$i.list ] || touch ${CONF_DIR}/$i.list || exit 1
 done
 touch /tmp/filter.list
 

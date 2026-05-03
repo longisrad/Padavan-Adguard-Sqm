@@ -8,6 +8,7 @@
 ### https, http
 --filter-tcp=443,80 --filter-l7=http,tls
 <HOSTLIST>
+#--ipset-exclude=/etc/storage/zapret/ipset-exclude.list
 #--hostlist-exclude=/etc/storage/zapret/exclude.list
 --payload=tls_client_hello
 --lua-desync=fake:blob=stun:tcp_seq=10000

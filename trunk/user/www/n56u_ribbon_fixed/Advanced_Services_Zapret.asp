@@ -180,7 +180,7 @@ function restoreZapretDomain(){
 	var v, cmd;
 
 	v = "<% nvram_get_x("", "zapret_enable"); %>";
-	cmd = 'cd /etc/storage/zapret;rm -f ./user.list ./auto.list ./exclude.list;';
+	cmd = 'cd /etc/storage/zapret;rm -f user.list auto.list exclude.list;';
 	cmd += 'zapret.sh ' + (v == 1 ? 'restart' : '') + ';';
 	cmd += 'mtd_storage.sh save';
 
@@ -337,8 +337,8 @@ function zapret_strategy_change(o, v) {
                                         </tr>
                                         <tr>
                                             <td colspan="2">
-                                                <a href="javascript:spoiler_toggle('site.list')"><span><#ZapretDomainLists#>:</span> <i style="scale: 75%;" class="icon-chevron-down"></i></a>
-                                                <table id="site.list" height="100%" width="100%" cellpadding="0" cellspacing="0" class="table" style="border: 0px; margin: 0px; margin-bottom: 8px; display:none">
+                                                <a href="javascript:spoiler_toggle('domain.list')"><span><#ZapretDomainLists#> (<b>user.list, auto.list, exclude.list</b>):</span> <i style="scale: 75%;" class="icon-chevron-down"></i></a>
+                                                <table id="domain.list" height="100%" width="100%" cellpadding="0" cellspacing="0" class="table" style="border: 0px; margin: 0px; margin-bottom: 8px; display:none">
                                                     <tr>
                                                         <td style="border:0px; padding-bottom: 4px;">
                                                             <#ZapretCustomList#>:
@@ -359,7 +359,30 @@ function zapret_strategy_change(o, v) {
                                                             <textarea rows="20" spellcheck="false" maxlength="16384" class="span12 strategy" name="zapretc.auto.list" style="height: 100%; margin-bottom: 0px"><% nvram_dump("zapretc.auto.list",""); %></textarea>
                                                         </td>
                                                         <td style="border:0px; width: 33%; padding: 0px; padding-left: 5px; vertical-align: top;">
-                                                            <textarea rows="20" spellcheck="false" maxlength="16384" class="span12 strategy" name="zapretc.exclude.list" style="height: 100%; margin-bottom: 0px"><% nvram_dump("zapretc.exclude.list",""); %></textarea>
+                                                            <textarea rows="20" spellcheck="false" maxlength="65536" class="span12 strategy" name="zapretc.exclude.list" style="height: 100%; margin-bottom: 0px"><% nvram_dump("zapretc.exclude.list",""); %></textarea>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <a href="javascript:spoiler_toggle('ipset.list')"><span><#ZapretIpsetLists#> (<b>ipset.list, ipset-exclude.list</b>):</span> <i style="scale: 75%;" class="icon-chevron-down"></i></a>
+                                                <table id="ipset.list" height="100%" width="100%" cellpadding="0" cellspacing="0" class="table" style="border: 0px; margin: 0px; margin-bottom: 8px; display:none">
+                                                    <tr>
+                                                        <td style="border:0px; padding-bottom: 4px;">
+                                                            <#ZapretIpsetCustomList#>:
+                                                        </td>
+                                                        <td style="border:0px; padding-bottom: 4px; padding-left: 13px; position: relative">
+                                                            <#ZapretIpsetExclusionList#>:
+                                                        </td>
+                                                    </tr>
+                                                    <tr height="100%">
+                                                        <td style="border:0px; width: 50%; padding: 0px; padding-right: 5px; vertical-align: top;">
+                                                            <textarea rows="20" spellcheck="false" maxlength="65536" class="span12 strategy" name="zapretc.ipset.list" style="height: 100%; margin-bottom: 0px"><% nvram_dump("zapretc.ipset.list",""); %></textarea>
+                                                        </td>
+                                                        <td style="border:0px; padding: 0px; padding-left: 5px; vertical-align: top;">
+                                                            <textarea rows="20" spellcheck="false" maxlength="65536" class="span12 strategy" name="zapretc.ipset-exclude.list" style="height: 100%; margin-bottom: 0px"><% nvram_dump("zapretc.ipset-exclude.list",""); %></textarea>
                                                         </td>
                                                     </tr>
                                                 </table>

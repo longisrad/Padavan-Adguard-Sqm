@@ -1840,3 +1840,6 @@ Service_DNSCrypt_Info=DNSCrypt is a protocol that encrypts DNS queries between a
 Service_DNSCrypt_Mode_Desc=<b>Standalone</b>: the service works by itself.<br><b>Router's DNS</b>: integrates with the router's built-in DNS server to resolve domain names. The provider DNS is ignored.
 Service_DNSCrypt_Mode_Menu0=Standalone
 Service_DNSCrypt_Mode_Menu1=Router's DNS
+ZapretIpsetLists=Lists of IP addresses/networks
+ZapretIpsetCustomList=inclusions
+ZapretIpsetExclusionList=exclusions
