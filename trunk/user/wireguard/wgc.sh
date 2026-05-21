@@ -272,7 +272,9 @@ connect_wg()
 {
     # $1 reconnect
 
-    if ! check_connected; then
+    if check_connected; then
+        [ -n "$(nvram get wg_log_reduce_t)" ] && log_success_connect
+    else
         setconf_wg $1
         if check_connection_status; then
             log_success_connect
