@@ -723,6 +723,9 @@ start_services_once(int is_ap_mode)
 	start_vpn_server();
 	start_watchdog();
 	start_infosvr();
+#if defined(APP_ADGUARD)
+	start_adguard();
+#endif
 
 	if (!is_ap_mode) {
 #if defined(APP_ZAPRET)
