@@ -744,6 +744,9 @@ start_services_once(int is_ap_mode)
 			br_set_stp(IFNAME_BR, 1);
 			br_set_fd(IFNAME_BR, 15);
 		}
+#if defined(SQM_WEBUI)
+		start_sqm();
+#endif
 	} else {
 		start_udpxy(IFNAME_BR);
 #if defined(APP_XUPNPD)
