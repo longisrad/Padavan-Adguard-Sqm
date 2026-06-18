@@ -475,6 +475,65 @@ restart_dnscrypt(void)
 	start_dnscrypt();
 }
 #endif
+#if defined(APP_ADGUARD)
+int
+is_adguard_run(void)
+{
+	if (check_if_file_exist("/usr/bin/AdGuardHome"))
+	{
+		if (pids("AdGuardHome"))
+			return 1;
+	}
+	return 0;
+}
+
+void
+stop_adguard(void)
+{
+	eval("/usr/bin/adguardhome.sh", "stop");
+}
+
+void
+start_adguard(void)
+{
+	if (nvram_get_int("agh_enabled") == 1)
+		eval("/usr/bin/adguardhome.sh", "start");
+}
+
+void
+restart_adguard(void)
+{
+	stop_adguard();
+	start_adguard();
+}
+#endif
+#if defined(SQM_WEBUI)
+void
+stop_sqm(void)
+{
+	char *sqm_interface = nvram_get("sqm_interface");
+	eval("/usr/bin/sqm.sh", sqm_interface, "clear");
+}
+
+void
+start_sqm(void)
+{
+	if (nvram_get_int("sqm_enabled") == 1) {
+		char *sqm_interface     = nvram_get("sqm_interface");
+		char *sqm_upload_speed   = nvram_get("sqm_upload_speed");
+		char *sqm_download_speed = nvram_get("sqm_download_speed");
+		eval("/usr/bin/sqm.sh", sqm_interface, sqm_download_speed, sqm_upload_speed);
+	}
+}
+
+void
+restart_sqm(void)
+{
+	stop_sqm();
+	if (nvram_get_int("sqm_enabled") == 1)
+		start_sqm();
+}
+#endif
 
 void
 start_httpd(int restart_fw)
