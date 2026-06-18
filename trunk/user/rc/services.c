@@ -796,6 +796,12 @@ stop_services(int stopall)
 #if defined(APP_DNSCRYPT)
 	stop_dnscrypt();
 #endif
+#if defined(APP_ADGUARD)
+	stop_adguard();
+#endif
+#if defined(SQM_WEBUI)
+	stop_sqm();
+#endif
 #if defined(APP_ZAPRET)
 	stop_zapret();
 #endif
