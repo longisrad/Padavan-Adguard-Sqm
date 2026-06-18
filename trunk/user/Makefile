@@ -85,6 +85,12 @@ ifneq (,$(filter y,$(CONFIG_FIRMWARE_INCLUDE_SSREDIR) $(CONFIG_FIRMWARE_INCLUDE_
 SHADOWSOCKS_ENABLED=y
 endif
 
+ifeq ($(CONFIG_FIRMWARE_INCLUDE_AGH),y)
+APP_ADGUARD=y
+endif
+ifeq ($(CONFIG_FIRMWARE_SQM_UI),y)
+APP_SQM_UI=y
+endif
 
 dir_y =
 dir_n =
