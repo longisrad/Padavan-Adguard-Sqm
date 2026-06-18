@@ -666,6 +666,21 @@ struct nvram_pair router_defaults[] = {
 	{ "adsc_enable", "0" },
 	{ "crond_enable", "0" },
 	{ "crond_log", "0" },
+{ "crond_enable", "0" },
+	{ "crond_log", "0" },
+#if defined(APP_ADGUARD)
+	{ "agh_enabled", "0" },
+	{ "adguard_replace_dns", "0" },
+	{ "adguard_port", "3000" },
+#endif
+#if defined(SQM_WEBUI)
+	{ "sqm_enabled", "0" },
+	{ "sqm_interface", "ppp0" },
+	{ "sqm_upload_speed", "80" },
+	{ "sqm_download_speed", "80" },
+#endif
+
+#if defined(SUPPORT_ZRAM)
 
 #if defined(SUPPORT_ZRAM)
 	{ "zram_enable", "0" },
