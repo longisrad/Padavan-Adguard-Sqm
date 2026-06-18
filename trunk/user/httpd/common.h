@@ -160,6 +160,8 @@ typedef u_int8_t u8;
 #define EVT_RESTART_PRIVOXY		1
 #define EVT_RESTART_DNSCRYPT		1
 #define EVT_RESTART_ZRAM		1
+#define EVT_RESTART_AGH			1
+#define EVT_RESTART_SQM			1
 #define EVT_RESTART_REBOOT		40
 
 struct variable
