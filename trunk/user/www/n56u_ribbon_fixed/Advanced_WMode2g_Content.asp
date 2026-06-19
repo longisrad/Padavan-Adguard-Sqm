@@ -23,6 +23,20 @@ var $j = jQuery.noConflict();
 
 var wds_aplist = [["", "", ""]];
 
+// Ghi đè hàm decodeSSID để tự động sửa ký tự %20 thành dấu cách và giải mã các ký tự đặc biệt khác
+if (typeof decodeSSID === 'function') {
+	var _decodeSSID = decodeSSID;
+	decodeSSID = function(ssid) {
+		var decoded = _decodeSSID(ssid);
+		try {
+			decoded = decodeURIComponent(decoded);
+		} catch (e) {
+			decoded = decoded.replace(/%20/g, " ");
+		}
+		return decoded;
+	};
+}
+
 function initial(){
 	show_banner(1);
 	show_menu(5,1,3);
@@ -87,6 +101,7 @@ function done_validating(action){
 	refreshpage();
 }
 
+// Gọi API quét Wi-Fi
 function wds_scan(){
 	$j.ajax({
 		url: '/wds_aplist_2g.asp',
@@ -406,43 +421,4 @@ function hideClients_Block(){
                                             <td>
                                                 <select name="rt_sta_crypto" class="input">
                                                     <option value="tkip" <% nvram_match_x("", "rt_sta_crypto", "tkip", "selected"); %>>TKIP</option>
-                                                    <option value="aes" <% nvram_match_x("", "rt_sta_crypto", "aes", "selected"); %>>AES</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr id="row_apc_3" style="display:none;">
-                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 0, 7);"><#WLANConfig11b_x_PSKKey_itemname#></a></th>
-                                            <td>
-                                                <div class="input-append">
-                                                    <input type="password" name="rt_sta_wpa_psk" id="rt_sta_wpa_psk" maxlength="64" size="32" value="" style="width: 175px;">
-                                                    <button style="margin-left: -5px;" class="btn" type="button" onclick="passwordShowHide('rt_sta_wpa_psk')"><i class="icon-eye-close"></i></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
-
-                                    <table class="table">
-                                        <tr>
-                                            <td id="col_goto5" width="50%" style="margin-top: 10px; border-top: 0 none;">
-                                                <input class="btn btn-info" type="button" name="goto5" value="<#GO_5G#>" onclick="location.href='Advanced_WMode_Content.asp';">
-                                            </td>
-                                            <td style="border-top: 0 none;">
-                                                <input class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" />
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    </form>
-
-    <div id="footer"></div>
-</div>
-</body>
-</html>
+                                                    <option value="aes
