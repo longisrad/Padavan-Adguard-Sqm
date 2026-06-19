@@ -2189,6 +2189,16 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 #else
 	int found_support_zram = 0;
 #endif
+#if defined(APP_ADGUARD)
+	int found_app_agh = 1;
+#else
+	int found_app_agh = 0;
+#endif
+#if defined(SQM_WEBUI)
+	int found_sqm_webui = 1;
+#else
+	int found_sqm_webui = 0;
+#endif
 #if defined(SUPPORT_IPSET)
 	int found_support_ipset = 1;
 #else
