@@ -380,4 +380,72 @@ function hideClients_Block(){
                                                 </div>
 
                                                 <input class="btn btn-primary" id="RBRList" style="margin-left: 5px; width: 99px;" type="submit" onClick="return markGroup(this, 'RBRList', 4, ' Add ');" name="RBRList" value="<#CTL_add#>" size="12">
-                                                <div id="ctl_wds_3" class="alert
+                                                <div id="ctl_wds_3" class="alert alert-danger" style="margin-top: 5px; margin-bottom: 0px;">* <#JS_validmac#></div>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_wds_2" style="display:none;">
+                                            <th><#WLANConfig11b_RBRList_groupitemdesc#></th>
+                                            <td>
+                                                <div style="float: left;">
+                                                    <select size="4" name="RBRList_s" multiple="true" class="input" style="vertical-align:top;" >
+                                                        <% nvram_get_table_x("WLANConfig11a","RBRList"); %>
+                                                    </select>
+                                                    <input class="btn btn-danger" style="width: 99px;" type="submit" onClick="return markGroup(this, 'RBRList', 2, ' Del ');" name="RBRList2" value="<#CTL_del#>" size="12">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_apc_1" style="display:none;">
+                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 0, 5);"><#WLANConfig11b_AuthenticationMethod_itemname#></a></th>
+                                            <td>
+                                                <select name="wl_sta_auth_mode" class="input" onChange="change_sta_auth_mode(1);">
+                                                    <option value="open" <% nvram_match_x("", "wl_sta_auth_mode", "open", "selected"); %>>Open System</option>
+                                                    <option value="psk" <% nvram_double_match_x("", "wl_sta_auth_mode", "psk", "", "wl_sta_wpa_mode", "1", "selected"); %>>WPA-Personal</option>
+                                                    <option value="psk" <% nvram_double_match_x("", "wl_sta_auth_mode", "psk", "", "wl_sta_wpa_mode", "2", "selected"); %>>WPA2-Personal</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_apc_2" style="display:none;">
+                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 0, 6);"><#WLANConfig11b_WPAType_itemname#></a></th>
+                                            <td>
+                                                <select name="wl_sta_crypto" class="input">
+                                                    <option value="tkip" <% nvram_match_x("", "wl_sta_crypto", "tkip", "selected"); %>>TKIP</option>
+                                                    <option value="aes" <% nvram_match_x("", "wl_sta_crypto", "aes", "selected"); %>>AES</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_apc_3" style="display:none;">
+                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 0, 7);"><#WLANConfig11b_x_PSKKey_itemname#></a></th>
+                                            <td>
+                                                <div class="input-append">
+                                                    <input type="password" name="wl_sta_wpa_psk" id="wl_sta_wpa_psk" maxlength="64" size="32" value="" style="width: 175px;">
+                                                    <button style="margin-left: -5px;" class="btn" type="button" onclick="passwordShowHide('wl_sta_wpa_psk')"><i class="icon-eye-close"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <table class="table">
+                                        <tr>
+                                            <td width="50%" style="margin-top: 10px; border-top: 0 none;">
+                                                <input class="btn btn-info" type="button"  value="<#GO_2G#>" onclick="location.href='Advanced_WMode2g_Content.asp';">
+                                            </td>
+                                            <td style="border-top: 0 none;">
+                                                <input class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </form>
+
+    <div id="footer"></div>
+</div>
+</body>
+</html>
