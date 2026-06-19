@@ -24,8 +24,7 @@ jobs:
 
     - name: Cấu hình Toolchain build sẵn (Chuẩn Padavan-NG)
       run: |
-        export PADAVAN_TOOLCHAIN_URL="https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/toolchain-3.4.x.tar.sh"
-        mkdir -p toolchain
+        export PADAVAN_TOOLCHAIN_URL="https://gitlab.com/api/v4/projects/hadzhioglu%2Fpadavan-ng/packages/generic/toolchain/latest/toolchain.tzst"
         curl -L -s "$PADAVAN_TOOLCHAIN_URL" | tar -xJ -C toolchain --strip-components=1
 
     - name: Compile Firmware
