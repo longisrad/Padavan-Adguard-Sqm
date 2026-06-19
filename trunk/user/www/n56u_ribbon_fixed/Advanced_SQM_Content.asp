@@ -127,7 +127,7 @@ function validForm() {
 
 function initial() {
     show_banner(1);
-    show_menu(5,12,1);
+    show_menu(5,13,1);
     show_footer();
 }
 </script>
