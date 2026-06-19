@@ -89,7 +89,8 @@ function build_iface_dropdown() {
 }
 
 function change_sqm_enabled() {
-    var v = document.form.sqm_enabled[1].checked;
+    var v = document.form.sqm_enabled[1].value;
+    var v = (enabled == "1");
     showhide_div("sqm_download_speed", v);
     showhide_div("sqm_upload_speed", v);
     showhide_div("sqm_interface_row", v);
@@ -114,7 +115,7 @@ function done_validating(action) {
 }
 
 function validForm() {
-    if (!document.form.sqm_enabled[0].checked) return true;
+    if (document.form.sqm_enabled.value == "0") return true;
 
     var ul  = parseInt(document.form.sqm_upload_speed.value, 10);
     var dl  = parseInt(document.form.sqm_download_speed.value, 10);
