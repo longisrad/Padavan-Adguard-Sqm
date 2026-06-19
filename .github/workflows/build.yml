@@ -1,0 +1,60 @@
+name: Build Padavan Firmware (Manual Toolchain)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout Bản vá/Cấu hình của bạn
+      uses: actions/checkout@v4
+
+    - name: Cài đặt Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt install unzip libtool-bin curl cmake gperf gawk flex bison nano xxd \
+            fakeroot kmod cpio git python3-docutils gettext automake autopoint \
+            texinfo build-essential help2man pkg-config zlib1g-dev libgmp3-dev \
+            libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget libc-dev-bin \
+            libctf-nobfd0 libcunit1-dev libhdf5-dev libopenblas-dev -y
+
+    - name: Clone mã nguồn Padavan
+      run: |
+        sudo git clone --depth=1 https://github.com/yuos-bit/Padavan.git /opt/rt-n56u
+        sudo chown -R $USER:$GROUPS /opt/rt-n56u
+
+    - name: Tự Compile Toolchain (Manual)
+      run: |
+        cd /opt/rt-n56u/toolchain-mipsel
+        ./clean_toolchain
+        ./build_toolchain
+
+    - name: Compile Firmware (Ghi đè file tối ưu SAU clear_tree)
+      run: |
+        cd /opt/rt-n56u/trunk
+        sudo ./clear_tree
+        
+        # 1. Chép đè file cấu hình tính năng NEWIFI3 tối ưu vào template
+        if [ -f "$GITHUB_WORKSPACE/NEWIFI3.config" ]; then
+          cp -f $GITHUB_WORKSPACE/NEWIFI3.config configs/templates/NEWIFI3.config
+          cp -f configs/templates/NEWIFI3.config .config
+        fi
+        
+        # 2. Chép đè cấu hình Kernel tối ưu vào thư mục board NEWIFI3
+        if [ -f "$GITHUB_WORKSPACE/kernel-3.4.x.config" ]; then
+          cp -f $GITHUB_WORKSPACE/kernel-3.4.x.config configs/boards/NEWIFI3/kernel-3.4.x.config
+        fi
+        
+        # Tiến hành build bằng script chỉnh sửa của tác giả
+        fakeroot ./build_firmware_modify NEWIFI3
+
+    - name: Upload Firmware
+      uses: actions/upload-artifact@v4
+      with:
+        name: Padavan_NEWIFI3_Optimized
+        path: /opt/rt-n56u/trunk/images/*.trx
+        
