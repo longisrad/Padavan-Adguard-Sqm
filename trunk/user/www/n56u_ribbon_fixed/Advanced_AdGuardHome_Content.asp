@@ -36,7 +36,7 @@ $j(document).ready(function() {
 
 function initial(){
     show_banner(1);
-    show_menu(5,11,1);
+    show_menu(5,12,1);
     show_footer();
 	if (!login_safe())
 		textarea_scripts_enabled(0);
