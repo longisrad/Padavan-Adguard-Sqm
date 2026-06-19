@@ -70,7 +70,7 @@ function build_iface_dropdown() {
         opt.text = label;
         if (ifaces[i] === saved_iface) opt.selected = true;
         sel.appendChild(opt);
-    </s>
+    }
 
     // Nếu saved_iface không có trong list thì thêm vào
     if (saved_iface !== "") {
@@ -89,7 +89,7 @@ function build_iface_dropdown() {
 }
 
 function change_sqm_enabled() {
-    var v = document.form.sqm_enabled[0].checked;
+    var v = document.form.sqm_enabled[1].checked;
     showhide_div("sqm_download_speed", v);
     showhide_div("sqm_upload_speed", v);
     showhide_div("sqm_interface_row", v);
