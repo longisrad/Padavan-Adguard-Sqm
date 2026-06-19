@@ -23,20 +23,6 @@ var $j = jQuery.noConflict();
 
 var wds_aplist = [["", "", ""]];
 
-// Ghi đè hàm decodeSSID để sửa lỗi hiển thị khoảng trắng %20 và giải mã ký tự đặc biệt
-if (typeof decodeSSID === 'function') {
-	var _decodeSSID = decodeSSID;
-	decodeSSID = function(ssid) {
-		var decoded = _decodeSSID(ssid);
-		try {
-			decoded = decodeURIComponent(decoded);
-		} catch (e) {
-			decoded = decoded.replace(/%20/g, " ");
-		}
-		return decoded;
-	};
-}
-
 function initial(){
 	show_banner(1);
 	show_menu(5,2,3);
@@ -53,7 +39,14 @@ function initial(){
 	change_sta_auth_mode(0);
 
 	document.form.wl_channel.value = document.form.wl_channel_org.value;
-	document.form.wl_sta_ssid.value = decodeSSID(document.form.wl_sta_ssid_org.value);
+	
+	// Giải mã %20 cục bộ an toàn, không ghi đè hàm gốc
+	var original_ssid = decodeSSID(document.form.wl_sta_ssid_org.value);
+	if (typeof original_ssid === 'string') {
+		original_ssid = original_ssid.replace(/%20/g, " ");
+	}
+	document.form.wl_sta_ssid.value = original_ssid;
+	
 	document.form.wl_sta_wpa_psk.value = decodeURIComponent(document.form.wl_sta_wpa_psk_org.value);
 
 	document.getElementById('ctl_apc_2').addEventListener('input', checkSSID);
@@ -213,7 +206,13 @@ function showLANIPList(){
 
 	if(wds_aplist != ""){
 		for(var i = 0; i < wds_aplist.length ; i++){
-			wds_aplist[i][0] = decodeSSID(wds_aplist[i][0]);
+			// Giải mã %20 cục bộ và an toàn cho mảng wds_aplist
+			var parsed_ssid = decodeSSID(wds_aplist[i][0]);
+			if (typeof parsed_ssid === 'string') {
+				parsed_ssid = parsed_ssid.replace(/%20/g, " ");
+			}
+			wds_aplist[i][0] = parsed_ssid;
+			
 			if(wds_aplist[i][0] && wds_aplist[i][0].length > 16)
 				show_name = wds_aplist[i][0].substring(0, 14) + "..";
 			else
@@ -381,37 +380,4 @@ function hideClients_Block(){
                                                 </div>
 
                                                 <input class="btn btn-primary" id="RBRList" style="margin-left: 5px; width: 99px;" type="submit" onClick="return markGroup(this, 'RBRList', 4, ' Add ');" name="RBRList" value="<#CTL_add#>" size="12">
-                                                <div id="ctl_wds_3" class="alert alert-danger" style="margin-top: 5px; margin-bottom: 0px;">* <#JS_validmac#></div>
-                                            </td>
-                                        </tr>
-                                        <tr id="row_wds_2" style="display:none;">
-                                            <th><#WLANConfig11b_RBRList_groupitemdesc#></th>
-                                            <td>
-                                                <div style="float: left;">
-                                                    <select size="4" name="RBRList_s" multiple="true" class="input" style="vertical-align:top;" >
-                                                        <% nvram_get_table_x("WLANConfig11a","RBRList"); %>
-                                                    </select>
-                                                    <input class="btn btn-danger" style="width: 99px;" type="submit" onClick="return markGroup(this, 'RBRList', 2, ' Del ');" name="RBRList2" value="<#CTL_del#>" size="12">
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr id="row_apc_1" style="display:none;">
-                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 0, 5);"><#WLANConfig11b_AuthenticationMethod_itemname#></a></th>
-                                            <td>
-                                                <select name="wl_sta_auth_mode" class="input" onChange="change_sta_auth_mode(1);">
-                                                    <option value="open" <% nvram_match_x("", "wl_sta_auth_mode", "open", "selected"); %>>Open System</option>
-                                                    <option value="psk" <% nvram_double_match_x("", "wl_sta_auth_mode", "psk", "", "wl_sta_wpa_mode", "1", "selected"); %>>WPA-Personal</option>
-                                                    <option value="psk" <% nvram_double_match_x("", "wl_sta_auth_mode", "psk", "", "wl_sta_wpa_mode", "2", "selected"); %>>WPA2-Personal</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr id="row_apc_2" style="display:none;">
-                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 0, 6);"><#WLANConfig11b_WPAType_itemname#></a></th>
-                                            <td>
-                                                <select name="wl_sta_crypto" class="input">
-                                                    <option value="tkip" <% nvram_match_x("", "wl_sta_crypto", "tkip", "selected"); %>>TKIP</option>
-                                                    <option value="aes" <% nvram_match_x("", "wl_sta_crypto", "aes", "selected"); %>>AES</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr id="row_apc_3" style="display:none;
+                                                <div id="ctl_wds_3" class="alert
