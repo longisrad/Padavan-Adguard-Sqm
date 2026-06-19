@@ -2364,7 +2364,9 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		"function found_support_wpad() { return %d;}\n"
 		"function found_support_zram() { return %d;}\n"
 		"function found_support_ipset() { return %d;}\n"
-		"function found_app_xupnpd() { return %d;}\n",
+		"function found_app_xupnpd() { return %d;}\n"
+		"function found_app_agh() { return %d;}\n"
+		"function found_sqm_webui() { return %d;}\n",
 		found_utl_hdparm,
 		found_app_ovpn,
 		found_app_wg,
@@ -2392,6 +2394,8 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		found_support_zram,
 		found_support_ipset,
 		found_app_xupnpd
+		found_app_agh,
+		found_sqm_webui
 	);
 
 	websWrite(wp,
