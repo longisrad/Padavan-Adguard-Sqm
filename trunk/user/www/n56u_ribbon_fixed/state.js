@@ -391,7 +391,7 @@ function show_banner(L3){
 	show_top_status();
 }
 
-var tabtitle = new Array(11);
+var tabtitle = new Array(13);
 tabtitle[0] = new Array("", "<#menu5_1_1#>", "<#menu5_1_2#>", "<#menu5_1_3#>", "<#menu5_1_4#>", "<#menu5_1_5#>", "<#menu5_1_6#>");
 tabtitle[1] = new Array("", "<#menu5_1_1#>", "<#menu5_1_2#>", "<#menu5_1_3#>", "<#menu5_1_4#>", "<#menu5_1_5#>", "<#menu5_1_6#>");
 tabtitle[2] = new Array("", "<#menu5_2_1#>", "<#menu5_2_2#>", "<#menu5_2_3#>", "<#menu5_2_4#>", "<#menu5_2_5#>", "Wake-on-LAN");
@@ -405,6 +405,12 @@ tabtitle[7] = new Array("", "<#menu5_6_2#>", "<#menu5_6_1#>", "<#menu5_6_3#>", "
 tabtitle[8] = new Array("", "<#menu5_10_1#>", "<#menu5_10_2#>", "<#menu5_10_3#>");
 tabtitle[9] = new Array("", "<#menu5_11#>", "<#menu5_12#>", "WAN", "", "", "", "", "", "", "");
 tabtitle[10] = new Array("", "<#menu5_7_2#>", "<#menu5_7_3#>", "<#menu5_7_5#>", "<#menu5_7_6#>", "<#menu5_7_8#>");
+if (found_app_agh()) {
+	tabtitle[11] = new Array("", "<#menu5_13_1#>");
+}
+if (found_sqm_webui()) {
+	tabtitle[12] = new Array("", "<#menu5_14_1#>");
+}
 
 //Level 3 Tab title
 var tablink = new Array(11);
