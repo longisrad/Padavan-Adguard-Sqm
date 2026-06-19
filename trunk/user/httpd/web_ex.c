@@ -2393,7 +2393,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		found_support_wpad,
 		found_support_zram,
 		found_support_ipset,
-		found_app_xupnpd
+		found_app_xupnpd,
 		found_app_agh,
 		found_sqm_webui
 	);
