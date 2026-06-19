@@ -343,4 +343,119 @@ function hideClients_Block(){
                                             <td style="border-top: 0 none;">
                                                 <select name="rt_mode_x" class="input" onChange="change_wireless_bridge();">
                                                     <option value="0" <% nvram_match_x("","rt_mode_x", "0","selected"); %>><#WdsMode0#></option>
-                                                    <option value="1" <% nvram_match_x("","rt_mode_x", "1","selected");
+                                                    <option value="1" <% nvram_match_x("","rt_mode_x", "1","selected"); %>><#WdsMode1#></option>
+                                                    <option value="2" <% nvram_match_x("","rt_mode_x", "2","selected"); %>><#WdsMode2#></option>
+                                                    <option value="3" <% nvram_match_x("","rt_mode_x", "3","selected"); %>><#WdsMode3#></option>
+                                                    <option value="4" <% nvram_match_x("","rt_mode_x", "4","selected"); %>><#WdsMode4#></option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_apc_wisp" style="display:none;">
+                                            <th><#APCliRole#></th>
+                                            <td>
+                                                <select name="rt_sta_wisp" class="input">
+                                                    <option value="0" <% nvram_match_x("","rt_sta_wisp", "0","selected"); %>>LAN bridge</option>
+                                                    <option value="1" <% nvram_match_x("","rt_sta_wisp", "1","selected"); %>>WAN (Wireless ISP)</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_channel" style="display:none;">
+                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 1, 2);"><#WLANConfig11b_Channel_itemname#></a></th>
+                                            <td>
+                                                <select name="rt_channel" class="input" onChange="return change_common_rt(this, 'WLANConfig11b', 'rt_channel')"></select>
+                                                &nbsp;
+                                                <label id="auto_seek" class="checkbox inline"><input type="checkbox" name="auto_seek_fake" value="" style="margin-left:10;" onclick="click_auto_seek(this);" <% nvram_match_x("", "rt_sta_auto", "1", "checked"); %>/><#APCliAuto#></label>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_wds_1" style="display:none;">
+                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 1, 3);"><#WLANConfig11b_x_BRApply_itemname#></a></th>
+                                            <td>
+                                                <select name="rt_wdsapply_x" class="input" onChange="change_wdsapply();">
+                                                    <option value="0" <% nvram_match_x("","rt_wdsapply_x", "0","selected"); %>><#WdsLazy#></option>
+                                                    <option value="1" <% nvram_match_x("","rt_wdsapply_x", "1","selected"); %>><#checkbox_Yes#></option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <table width="100%" align="center" cellpadding="4" cellspacing="0" class="table">
+                                        <tr id="row_wds_apc" style="display:none;">
+                                            <th width="50%"><a id="ctl_apc_1" class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 0, 1);">STA SSID:</a></th>
+                                            <td>
+                                                <div id="WDSAPList" class="alert alert-info ddown-list"></div>
+                                                <div class="input-append" style="float: left;">
+                                                    <input type="text" id="ctl_wds_1" name="rt_wdslist_x_0" value="" maxlength="12" size="14" onKeyPress="return is_hwaddr(event);" style="float:left; width: 175px;">
+                                                    <input type="text" id="ctl_apc_2" name="rt_sta_ssid" value="" maxlength="32" class="input" size="20" style="float:left; width: 175px;"/>
+                                                    <button class="btn btn-chevron" id="ctl_wds_2" type="button" onclick="pullLANIPList(this);" title="Select the Access Point"><i class="icon icon-chevron-down"></i></button>
+                                                </div>
+
+                                                <input class="btn btn-primary" id="RBRList" style="margin-left: 5px; width: 99px;" type="submit" onClick="return markGroup(this, 'rt_RBRList', 4, ' Add ');" name="rt_RBRList" value="<#CTL_add#>" size="12">
+                                                <div id="ctl_wds_3" class="alert alert-danger" style="margin-top: 5px; margin-bottom: 0px;">* <#JS_validmac#></div>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_wds_2" style="display:none;">
+                                            <th><#WLANConfig11b_RBRList_groupitemdesc#></th>
+                                            <td>
+                                                <div style="float: left;">
+                                                    <select size="4" name="rt_RBRList_s" multiple="true" class="input" style="vertical-align:top;" >
+                                                        <% nvram_get_table_x("WLANConfig11b","rt_RBRList"); %>
+                                                    </select>
+                                                    <input class="btn btn-danger" style="width: 99px;" type="submit" onClick="return markGroup(this, 'rt_RBRList', 2, ' Del ');" name="rt_RBRList2" value="<#CTL_del#>" size="12">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_apc_1" style="display:none;">
+                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 0, 5);"><#WLANConfig11b_AuthenticationMethod_itemname#></a></th>
+                                            <td>
+                                                <select name="rt_sta_auth_mode" class="input" onChange="change_sta_auth_mode(1);">
+                                                    <option value="open" <% nvram_match_x("", "rt_sta_auth_mode", "open", "selected"); %>>Open System</option>
+                                                    <option value="psk" <% nvram_double_match_x("", "rt_sta_auth_mode", "psk", "", "rt_sta_wpa_mode", "1", "selected"); %>>WPA-Personal</option>
+                                                    <option value="psk" <% nvram_double_match_x("", "rt_sta_auth_mode", "psk", "", "rt_sta_wpa_mode", "2", "selected"); %>>WPA2-Personal</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_apc_2" style="display:none;">
+                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 0, 6);"><#WLANConfig11b_WPAType_itemname#></a></th>
+                                            <td>
+                                                <select name="rt_sta_crypto" class="input">
+                                                    <option value="tkip" <% nvram_match_x("", "rt_sta_crypto", "tkip", "selected"); %>>TKIP</option>
+                                                    <option value="aes" <% nvram_match_x("", "rt_sta_crypto", "aes", "selected"); %>>AES</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_apc_3" style="display:none;">
+                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 0, 7);"><#WLANConfig11b_x_PSKKey_itemname#></a></th>
+                                            <td>
+                                                <div class="input-append">
+                                                    <input type="password" name="rt_sta_wpa_psk" id="rt_sta_wpa_psk" maxlength="64" size="32" value="" style="width: 175px;">
+                                                    <button style="margin-left: -5px;" class="btn" type="button" onclick="passwordShowHide('rt_sta_wpa_psk')"><i class="icon-eye-close"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <table class="table">
+                                        <tr>
+                                            <td id="col_goto5" width="50%" style="margin-top: 10px; border-top: 0 none;">
+                                                <input class="btn btn-info" type="button" name="goto5" value="<#GO_5G#>" onclick="location.href='Advanced_WMode_Content.asp';">
+                                            </td>
+                                            <td style="border-top: 0 none;">
+                                                <input class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </form>
+
+    <div id="footer"></div>
+</div>
+</body>
+</html>
