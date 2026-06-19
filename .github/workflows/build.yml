@@ -3,8 +3,8 @@ name: Build firmware
 on:
   workflow_dispatch:
   push:
-    tags:
-      - '*'
+    branches:
+      - master  # Tự động chạy khi bạn push lên nhánh master
 
 jobs:
   build:
@@ -18,48 +18,45 @@ jobs:
       run: |
         sed -i 's|\r$||g' variables build.config
         . <(cat variables build.config)
-        PADAVAN_THEMES="${PADAVAN_THEMES[*]}"
         for v in "${!PADAVAN_@}" "${!CONFIG_@}"; do
           echo "$v=${!v}" >> $GITHUB_ENV
         done
 
-    # TỰ BUILD TOOLCHAIN TỪ THƯ MỤC GỐC CỦA REPO
+    # 1. TỰ BIÊN DỊCH TOOLCHAIN THỦ CÔNG (Đã ép cờ né lỗi GCC mới trên Ubuntu 24.04)
     - name: Build Toolchain
       run: |
         git config --global --add safe.directory '*'
         
-        echo "Di chuyển vào thư mục toolchain gốc..."
+        # Ép trình biên dịch bỏ qua các lỗi kiểm tra nghiêm ngặt của Ubuntu 24.04 khi dịch mã nguồn cũ
+        export CFLAGS="-w -O2"
+        export CXXFLAGS="-w -O2 -fpermissive"
+        
         cd toolchain
-        
-        echo "Cấp quyền thực thi cho các script..."
         chmod +x build_toolchain.sh clean_sources.sh
-        
-        echo "Bắt đầu dọn dẹp và biên dịch toolchain..."
         ./clean_sources.sh
         ./build_toolchain.sh
 
-    - name: Install themes
-      run: |
-        if [[ -n $PADAVAN_THEMES ]]; then
-          git clone --depth 1 -b "$PADAVAN_THEMES_BRANCH" "$PADAVAN_THEMES_REPO" themes
-          cp -r themes/common-theme themes/jquery.js trunk/user/www/n56u_ribbon_fixed
+    # ĐÃ XÓA BƯỚC INSTALL THEMES TRÊN MẠNG ĐỂ BẢO VỆ CÁC FILE WWW BẠN TỰ MOD QUẢN LÝ QOS/ADGUARD
 
-          for theme in $PADAVAN_THEMES; do
-            echo "Installing $theme theme"
-            cp -r "themes/$theme-theme" trunk/user/www/n56u_ribbon_fixed
-          done
+    # 2. BƯỚC GHI ĐÈ THÔNG MINH: Bốc file cấu hình tính năng ngoài gốc ném vào đúng vị trí mẫu bo mạch
+    - name: Inject Custom Optimized Configs
+      run: |
+        # Chép file cấu hình tính năng của bạn đè vào file mẫu của bo mạch NEWIFI-D2
+        if [ -f "$GITHUB_WORKSPACE/build.config" ]; then
+          cp -f $GITHUB_WORKSPACE/build.config trunk/configs/templates/NEWIFI-D2.config
         fi
 
-    - name: Run custom pre-build script
-      run: '[[ -f pre-build.sh ]] && . pre-build.sh || :'
-
+    # 3. TIẾN HÀNH BIÊN DỊCH FIRMWARE THEO CHUẨN ĐƯỜNG DẪN CỦA PADAVAN-NG
     - name: Build firmware
       run: |
-        cp build.config trunk/.config
         cd trunk
         chmod +x clear_tree.sh build_firmware.sh
+        
+        # Dọn dẹp các file rác nhưng giữ nguyên mã nguồn www bạn đã mod
         ./clear_tree.sh
-        ./build_firmware.sh
+        
+        # Gọi script biên dịch chuẩn và truyền tên bo mạch chính xác của mã nguồn padavan-ng
+        ./build_firmware.sh NEWIFI-D2
 
         FW_FILE_NAME="$(find images -type f -regextype posix-extended -iregex ".*\.(trx|bin)$" \
                         -printf "%T@\t%f\n" | sort -V | tail -1 | cut -f2)"
@@ -67,7 +64,7 @@ jobs:
         echo "FW_FILE_NAME=$FW_FILE_NAME" >> $GITHUB_ENV
 
     - name: Run custom post-build script
-      run: '[[ -f post-build.sh ]] && . post-build.sh || :'
+      run: '[[ -f post-build.sh ]] && . post-build.sh || : '
 
     - name: Prepare artifacts
       run: |
@@ -77,7 +74,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: padavan-ng_${{ env.CONFIG_VENDOR }}_${{ env.CONFIG_FIRMWARE_PRODUCT_ID }}_${{ env.BUILD_TIMESTAMP }}
+        name: padavan-ng_NEWIFI-D2_ManualCompile_${{ env.BUILD_TIMESTAMP }}
         retention-days: 7
         path: |
           ${{ env.FW_FILE_NAME }}
@@ -85,14 +82,11 @@ jobs:
 
     - name: Check firmware size
       run: |
-        partitions=trunk/configs/boards/$CONFIG_VENDOR/$CONFIG_FIRMWARE_PRODUCT_ID/partitions.config
+        partitions=trunk/configs/boards/NEWIFI/NEWIFI-D2/partitions.config
         max_fw_size="$(awk '/Firmware/ { getline; getline; sub(",", ""); print strtonum($2); }' "$partitions")"
         fw_size="$(stat -c %s "$FW_FILE_NAME")"
-
         if ((fw_size > max_fw_size)); then
-          fw_size_fmtd="$(numfmt --grouping "$fw_size") bytes"
-          max_fw_size_fmtd="$(numfmt --grouping "$max_fw_size") bytes"
-          echo "Firmware size ($fw_size_fmtd) exceeds max size ($max_fw_size_fmtd) for your target device"
+          echo "Firmware size exceeds partition size"
           exit 1
         fi
         
