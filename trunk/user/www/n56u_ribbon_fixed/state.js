@@ -413,7 +413,7 @@ if (found_sqm_webui()) {
 }
 
 //Level 3 Tab title
-var tablink = new Array(11);
+var tablink = new Array(13);
 tablink[0] = new Array("", "Advanced_Wireless2g_Content.asp", "Advanced_WGuest2g_Content.asp", "Advanced_WMode2g_Content.asp", "Advanced_ACL2g_Content.asp", "Advanced_WSecurity2g_Content.asp", "Advanced_WAdvanced2g_Content.asp");
 tablink[1] = new Array("", "Advanced_Wireless_Content.asp", "Advanced_WGuest_Content.asp", "Advanced_WMode_Content.asp", "Advanced_ACL_Content.asp", "Advanced_WSecurity_Content.asp", "Advanced_WAdvanced_Content.asp");
 tablink[2] = new Array("", "Advanced_LAN_Content.asp", "Advanced_DHCP_Content.asp", "Advanced_GWStaticRoute_Content.asp", "Advanced_IPTV_Content.asp", "Advanced_Switch_Content.asp", "Advanced_WOL_Content.asp");
@@ -427,10 +427,24 @@ tablink[7] = new Array("", "Advanced_System_Content.asp", "Advanced_OperationMod
 tablink[8] = new Array("", "Advanced_Tweaks_Content.asp", "Advanced_Scripts_Content.asp", "Advanced_InetDetect_Content.asp");
 tablink[9] = new Array("", "Main_WStatus2g_Content.asp", "Main_WStatus_Content.asp", "", "", "", "", "", "", "", "");
 tablink[10] = new Array("", "Main_LogStatus_Content.asp", "Main_DHCPStatus_Content.asp", "Main_IPTStatus_Content.asp", "Main_RouteStatus_Content.asp", "Main_CTStatus_Content.asp");
+if (found_app_agh()) {
+	tablink[11] = new Array("", "Advanced_AdGuardHome_Content.asp");
+}
+if (found_sqm_webui()) {
+	tablink[12] = new Array("", "Advanced_SQM_Content.asp");
+}
 
 //Level 2 Menu
 menuL2_title = new Array("", "<#menu5_11#>", "<#menu5_12#>", "<#menu5_2#>", "<#menu5_3#>", "<#menu5_5#>", "<#menu5_4#>", "<#menu5_6_5#>", "<#menu5_6#>", "<#menu5_10#>", "<#menu5_9#>", "<#menu5_7#>");
 menuL2_link  = new Array("", tablink[0][1], tablink[1][1], tablink[2][1], tablink[3][1], tablink[4][1], tablink[5][1], tablink[6][1], tablink[7][1], tablink[8][1], tablink[9][1], tablink[10][1]);
+if (found_app_agh()) {
+	menuL2_title.push("<#menu5_13#>");
+	menuL2_link.push(tablink[11][1]);
+}
+if (found_sqm_webui()) {
+	menuL2_title.push("<#menu5_14#>");
+	menuL2_link.push(tablink[12][1]);
+}
 
 //Level 1 Menu in Gateway, Router mode
 menuL1_title = new Array("", "<#menu1#>", "<#menu3#>", "<#menu2#>", "<#menu6#>", "<#menu4#>", "<#menu5_8#>", "<#menu5#>");
