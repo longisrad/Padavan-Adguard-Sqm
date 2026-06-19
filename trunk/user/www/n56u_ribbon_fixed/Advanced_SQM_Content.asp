@@ -89,7 +89,7 @@ function build_iface_dropdown() {
 }
 
 function change_sqm_enabled() {
-    var v = document.form.sqm_enabled[1].value;
+    var v = document.form.sqm_enabled.value;
     var v = (enabled == "1");
     showhide_div("sqm_download_speed", v);
     showhide_div("sqm_upload_speed", v);
