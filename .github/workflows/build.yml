@@ -1,10 +1,10 @@
-name: Build Padavan Firmware (Manual Toolchain)
+name: Build Padavan Firmware (Dockerfile Standard)
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - master  # Đổi thành master vì repo của bạn đang dùng nhánh chính là master
+      - master
 
 jobs:
   build:
@@ -13,20 +13,23 @@ jobs:
     - name: Checkout Mã nguồn từ Repo hiện tại
       uses: actions/checkout@v4
 
-    - name: Cài đặt Dependencies
+    - name: Cài đặt Dependencies hệ thống
       run: |
         sudo apt-get update
         sudo apt install unzip libtool-bin curl cmake gperf gawk flex bison nano xxd \
             fakeroot kmod cpio git python3-docutils gettext automake autopoint \
             texinfo build-essential help2man pkg-config zlib1g-dev libgmp3-dev \
             libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget libc-dev-bin \
-            libctf-nobfd0 libcunit1-dev libhdf5-dev libopenblas-dev -y
+            libctf-nobfd0 libcunit1-dev libhdf5-dev libopenblas-dev zstd -y
 
-    - name: Tự Compile Toolchain (Manual)
+    - name: Cấu hình Toolchain build sẵn (Chuẩn Padavan-NG)
       run: |
-        cd toolchain-mipsel
-        ./clean_toolchain
-        ./build_toolchain
+        # Định nghĩa link toolchain mipsel chuẩn cho Padavan-NG giống như logic trong Dockerfile
+        export PADAVAN_TOOLCHAIN_URL="https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/toolchain-3.4.x.tar.sh"
+        
+        # Tiến hành tạo thư mục và giải nén toolchain vào đúng vị trí gốc
+        mkdir -p toolchain
+        curl -L -s "$PADAVAN_TOOLCHAIN_URL" | tar -xJ -C toolchain --strip-components=1
 
     - name: Compile Firmware
       run: |
@@ -44,7 +47,7 @@ jobs:
           cp -f $GITHUB_WORKSPACE/kernel-3.4.x.config configs/boards/NEWIFI3/kernel-3.4.x.config
         fi
         
-        # Tiến hành build
+        # Tiến hành build bằng script sinh firmware cho NEWIFI3
         fakeroot ./build_firmware_modify NEWIFI3
 
     - name: Upload Firmware
