@@ -24,10 +24,7 @@ jobs:
 
     - name: Cấu hình Toolchain build sẵn (Chuẩn Padavan-NG)
       run: |
-        # Định nghĩa link toolchain mipsel chuẩn cho Padavan-NG giống như logic trong Dockerfile
         export PADAVAN_TOOLCHAIN_URL="https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/toolchain-3.4.x.tar.sh"
-        
-        # Tiến hành tạo thư mục và giải nén toolchain vào đúng vị trí gốc
         mkdir -p toolchain
         curl -L -s "$PADAVAN_TOOLCHAIN_URL" | tar -xJ -C toolchain --strip-components=1
 
@@ -36,15 +33,25 @@ jobs:
         cd trunk
         sudo ./clear_tree
         
-        # 1. Chép đè file cấu hình tính năng tối ưu vào template và tạo .config gốc
+        # 1. Kiểm tra và chép đè file cấu hình tính năng (Chấp nhận cả 2 cách đặt tên)
         if [ -f "$GITHUB_WORKSPACE/NEWIFI3.config" ]; then
           cp -f $GITHUB_WORKSPACE/NEWIFI3.config configs/templates/NEWIFI3.config
-          cp -f configs/templates/NEWIFI3.config .config
+        elif [ -f "$GITHUB_WORKSPACE/newifi-d2.config" ]; then
+          cp -f $GITHUB_WORKSPACE/newifi-d2.config configs/templates/NEWIFI3.config
+        elif [ -f "$GITHUB_WORKSPACE/newifi-d2.config.txt" ]; then
+          cp -f $GITHUB_WORKSPACE/newifi-d2.config.txt configs/templates/NEWIFI3.config
+        else
+          echo "⚠️ Không tìm thấy file config nào ở thư mục gốc!"
         fi
+        
+        # Tạo file .config gốc từ template vừa chép
+        cp -f configs/templates/NEWIFI3.config .config
         
         # 2. Chép đè cấu hình Kernel tối ưu vào đúng thư mục board của NEWIFI3
         if [ -f "$GITHUB_WORKSPACE/kernel-3.4.x.config" ]; then
           cp -f $GITHUB_WORKSPACE/kernel-3.4.x.config configs/boards/NEWIFI3/kernel-3.4.x.config
+        elif [ -f "$GITHUB_WORKSPACE/kernel-3.4.x.config.txt" ]; then
+          cp -f $GITHUB_WORKSPACE/kernel-3.4.x.config.txt configs/boards/NEWIFI3/kernel-3.4.x.config
         fi
         
         # Tiến hành build bằng script sinh firmware cho NEWIFI3
