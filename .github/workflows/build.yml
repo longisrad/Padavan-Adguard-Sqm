@@ -24,7 +24,7 @@ jobs:
 
     - name: Tự Compile Toolchain (Manual)
       run: |
-        cd toolchain-mipsel
+        cd toolchain
         ./clean_toolchain
         ./build_toolchain
 
