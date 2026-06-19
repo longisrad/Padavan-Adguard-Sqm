@@ -1,64 +1,98 @@
-name: Build Padavan Firmware (Dockerfile Standard)
+name: Build firmware
 
 on:
   workflow_dispatch:
   push:
-    branches:
-      - master
+    tags:
+      - '*'
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container: registry.gitlab.com/hadzhioglu/padavan-ng
+    defaults: { run: { shell: bash } }
     steps:
-    - name: Checkout Mã nguồn từ Repo hiện tại
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: Cài đặt Dependencies hệ thống
+    - name: Get variables
       run: |
-        sudo apt-get update
-        sudo apt install unzip libtool-bin curl cmake gperf gawk flex bison nano xxd \
-            fakeroot kmod cpio git python3-docutils gettext automake autopoint \
-            texinfo build-essential help2man pkg-config zlib1g-dev libgmp3-dev \
-            libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget libc-dev-bin \
-            libctf-nobfd0 libcunit1-dev libhdf5-dev libopenblas-dev zstd -y
+        sed -i 's|\r$||g' variables build.config
+        . <(cat variables build.config)
+        PADAVAN_THEMES="${PADAVAN_THEMES[*]}"
+        for v in "${!PADAVAN_@}" "${!CONFIG_@}"; do
+          echo "$v=${!v}" >> $GITHUB_ENV
+        done
 
-    - name: Cấu hình Toolchain build sẵn (Chuẩn Padavan-NG)
+    # TỰ BUILD TOOLCHAIN TỪ THƯ MỤC GỐC CỦA REPO
+    - name: Build Toolchain
       run: |
-        export PADAVAN_TOOLCHAIN_URL="https://gitlab.com/api/v4/projects/hadzhioglu%2Fpadavan-ng/packages/generic/toolchain/latest/toolchain.tzst"
-        curl -L -s "$PADAVAN_TOOLCHAIN_URL" | tar -xJ -C toolchain --strip-components=1
+        git config --global --add safe.directory '*'
+        
+        echo "Di chuyển vào thư mục toolchain gốc..."
+        cd toolchain
+        
+        echo "Cấp quyền thực thi cho các script..."
+        chmod +x build_toolchain.sh clean_sources.sh
+        
+        echo "Bắt đầu dọn dẹp và biên dịch toolchain..."
+        ./clean_sources.sh
+        ./build_toolchain.sh
 
-    - name: Compile Firmware
+    - name: Install themes
       run: |
+        if [[ -n $PADAVAN_THEMES ]]; then
+          git clone --depth 1 -b "$PADAVAN_THEMES_BRANCH" "$PADAVAN_THEMES_REPO" themes
+          cp -r themes/common-theme themes/jquery.js trunk/user/www/n56u_ribbon_fixed
+
+          for theme in $PADAVAN_THEMES; do
+            echo "Installing $theme theme"
+            cp -r "themes/$theme-theme" trunk/user/www/n56u_ribbon_fixed
+          done
+        fi
+
+    - name: Run custom pre-build script
+      run: '[[ -f pre-build.sh ]] && . pre-build.sh || :'
+
+    - name: Build firmware
+      run: |
+        cp build.config trunk/.config
         cd trunk
-        sudo ./clear_tree
-        
-        # 1. Kiểm tra và chép đè file cấu hình tính năng (Chấp nhận cả 2 cách đặt tên)
-        if [ -f "$GITHUB_WORKSPACE/NEWIFI3.config" ]; then
-          cp -f $GITHUB_WORKSPACE/NEWIFI3.config configs/templates/NEWIFI3.config
-        elif [ -f "$GITHUB_WORKSPACE/newifi-d2.config" ]; then
-          cp -f $GITHUB_WORKSPACE/newifi-d2.config configs/templates/NEWIFI3.config
-        elif [ -f "$GITHUB_WORKSPACE/newifi-d2.config.txt" ]; then
-          cp -f $GITHUB_WORKSPACE/newifi-d2.config.txt configs/templates/NEWIFI3.config
-        else
-          echo "⚠️ Không tìm thấy file config nào ở thư mục gốc!"
-        fi
-        
-        # Tạo file .config gốc từ template vừa chép
-        cp -f configs/templates/NEWIFI3.config .config
-        
-        # 2. Chép đè cấu hình Kernel tối ưu vào đúng thư mục board của NEWIFI3
-        if [ -f "$GITHUB_WORKSPACE/kernel-3.4.x.config" ]; then
-          cp -f $GITHUB_WORKSPACE/kernel-3.4.x.config configs/boards/NEWIFI3/kernel-3.4.x.config
-        elif [ -f "$GITHUB_WORKSPACE/kernel-3.4.x.config.txt" ]; then
-          cp -f $GITHUB_WORKSPACE/kernel-3.4.x.config.txt configs/boards/NEWIFI3/kernel-3.4.x.config
-        fi
-        
-        # Tiến hành build bằng script sinh firmware cho NEWIFI3
-        fakeroot ./build_firmware_modify NEWIFI3
+        chmod +x clear_tree.sh build_firmware.sh
+        ./clear_tree.sh
+        ./build_firmware.sh
 
-    - name: Upload Firmware
+        FW_FILE_NAME="$(find images -type f -regextype posix-extended -iregex ".*\.(trx|bin)$" \
+                        -printf "%T@\t%f\n" | sort -V | tail -1 | cut -f2)"
+        [[ -n $FW_FILE_NAME ]] || { echo "Firmware file not found"; exit 1; }
+        echo "FW_FILE_NAME=$FW_FILE_NAME" >> $GITHUB_ENV
+
+    - name: Run custom post-build script
+      run: '[[ -f post-build.sh ]] && . post-build.sh || :'
+
+    - name: Prepare artifacts
+      run: |
+        cp "trunk/images/$FW_FILE_NAME" .
+        echo "BUILD_TIMESTAMP=$(date '+%Y.%m.%d_%H.%M.%S')" >> $GITHUB_ENV
+
+    - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: Padavan_NEWIFI3_Optimized
-        path: trunk/images/*.trx
+        name: padavan-ng_${{ env.CONFIG_VENDOR }}_${{ env.CONFIG_FIRMWARE_PRODUCT_ID }}_${{ env.BUILD_TIMESTAMP }}
+        retention-days: 7
+        path: |
+          ${{ env.FW_FILE_NAME }}
+          build.config
+
+    - name: Check firmware size
+      run: |
+        partitions=trunk/configs/boards/$CONFIG_VENDOR/$CONFIG_FIRMWARE_PRODUCT_ID/partitions.config
+        max_fw_size="$(awk '/Firmware/ { getline; getline; sub(",", ""); print strtonum($2); }' "$partitions")"
+        fw_size="$(stat -c %s "$FW_FILE_NAME")"
+
+        if ((fw_size > max_fw_size)); then
+          fw_size_fmtd="$(numfmt --grouping "$fw_size") bytes"
+          max_fw_size_fmtd="$(numfmt --grouping "$max_fw_size") bytes"
+          echo "Firmware size ($fw_size_fmtd) exceeds max size ($max_fw_size_fmtd) for your target device"
+          exit 1
+        fi
         
