@@ -39,16 +39,18 @@ function build_iface_dropdown() {
     var sel = document.getElementById("sqm_interface_sel");
     sel.options.length = 0;
 
-    // Tập hợp interface khả dụng — lọc bỏ rỗng
     var ifaces = [];
 
-    // PPPoE luôn ưu tiên đầu vì là WAN thực tế
+    // PPPoE ưu tiên đầu
     if (ppp_ifname && ppp_ifname !== "") ifaces.push(ppp_ifname);
-    if (wan_ifname  && wan_ifname  !== "" && ifaces.indexOf(wan_ifname) < 0)
+
+    // WAN DHCP
+    if (wan_ifname && wan_ifname !== "" && ifaces.indexOf(wan_ifname) < 0)
         ifaces.push(wan_ifname);
 
-    // Interface tĩnh phổ biến trên Newifi D2
-    var extras = ["eth3", "eth2.2", "br0"];
+    // Repeater mode - apclii0 (5GHz) và apcli0 (2.4GHz)
+    // Đây là WAN thực tế khi router ở chế độ repeater
+    var extras = ["apclii0", "apcli0", "eth3", "eth2.2", "br0"];
     for (var i = 0; i < extras.length; i++) {
         if (ifaces.indexOf(extras[i]) < 0)
             ifaces.push(extras[i]);
@@ -57,12 +59,20 @@ function build_iface_dropdown() {
     for (var i = 0; i < ifaces.length; i++) {
         var opt = document.createElement("option");
         opt.value = ifaces[i];
-        opt.text  = ifaces[i];
+
+        // Thêm label mô tả
+        var label = ifaces[i];
+        if (ifaces[i] === "apclii0") label = "apclii0 (WiFi 5GHz repeater)";
+        if (ifaces[i] === "apcli0")  label = "apcli0 (WiFi 2.4GHz repeater)";
+        if (ifaces[i] === "ppp0")    label = "ppp0 (PPPoE WAN)";
+        if (ifaces[i] === "eth3")    label = "eth3 (DHCP WAN)";
+
+        opt.text = label;
         if (ifaces[i] === saved_iface) opt.selected = true;
         sel.appendChild(opt);
-    }
+    </s>
 
-    // Nếu saved_iface không nằm trong danh sách → thêm vào cuối
+    // Nếu saved_iface không có trong list thì thêm vào
     if (saved_iface !== "") {
         var found = false;
         for (var i = 0; i < sel.options.length; i++) {
@@ -71,7 +81,7 @@ function build_iface_dropdown() {
         if (!found) {
             var opt = document.createElement("option");
             opt.value = saved_iface;
-            opt.text  = saved_iface + " (custom)";
+            opt.text  = saved_iface + " (current)";
             opt.selected = true;
             sel.appendChild(opt);
         }
