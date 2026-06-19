@@ -679,9 +679,6 @@ struct nvram_pair router_defaults[] = {
 	{ "sqm_upload_speed", "80" },
 	{ "sqm_download_speed", "80" },
 #endif
-
-#if defined(SUPPORT_ZRAM)
-
 #if defined(SUPPORT_ZRAM)
 	{ "zram_enable", "0" },
 #endif
