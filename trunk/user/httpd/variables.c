@@ -596,17 +596,7 @@
 			{"dnscrypt_listen_port", "", NULL, EVM_RESTART_DNSCRYPT|EVM_RESTART_DHCPD},
 			{"dnscrypt_mode", "", NULL, EVM_RESTART_DNSCRYPT|EVM_RESTART_DHCPD},
 #endif
-#if defined(APP_ADGUARD)
-			{"agh_enabled", "", NULL, EVM_RESTART_AGH},
-			{"adguard_replace_dns", "", NULL, EVM_RESTART_AGH},
-			{"adguard_port", "", NULL, EVM_RESTART_AGH},
-#endif
-#if defined(SQM_WEBUI)
-			{"sqm_enabled", "", NULL, EVM_RESTART_SQM},
-			{"sqm_interface", "", NULL, EVM_RESTART_SQM},
-			{"sqm_upload_speed", "", NULL, EVM_RESTART_SQM},
-			{"sqm_download_speed", "", NULL, EVM_RESTART_SQM},
-#endif
+
 #if defined (SUPPORT_WPAD)
 			{"scripts.wpad.dat", "File", NULL, EVM_BLOCK_UNSAFE},
 #endif
@@ -1005,6 +995,21 @@
 			{0,0,0,0}
 		};
 
+  struct variable variables_ExtraApps[] = {
+#if defined(APP_ADGUARD)
+		{"agh_enabled", "", NULL, EVM_RESTART_AGH},
+		{"adguard_replace_dns", "", NULL, EVM_RESTART_AGH},
+		{"adguard_port", "", NULL, EVM_RESTART_AGH},
+#endif
+#if defined(SQM_WEBUI)
+		{"sqm_enabled", "", NULL, EVM_RESTART_SQM},
+		{"sqm_interface", "", NULL, EVM_RESTART_SQM},
+		{"sqm_upload_speed", "", NULL, EVM_RESTART_SQM},
+		{"sqm_download_speed", "", NULL, EVM_RESTART_SQM},
+#endif
+		{0,0,0,0}
+	};
+
 	struct svcLink svcLinks[] = {
 		{"General",			variables_General},
 		{"Storage",			variables_Storage},
@@ -1024,6 +1029,7 @@
 		{"WLANAuthentication11a",	variables_WLANAuthentication11a},
 		{"WLANAuthentication11b",	variables_WLANAuthentication11b},
 		{"LANGUAGE",			variables_Language},
+        {"ExtraApplications",		variables_ExtraApps},
 		{0,0}
 	};
 
